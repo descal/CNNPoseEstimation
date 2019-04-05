@@ -1,0 +1,6 @@
+numpy
+moderngl
+pillow
+pyrr
+PyQt5==5.9.1
+matplotlib
