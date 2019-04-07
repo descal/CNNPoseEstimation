@@ -15,8 +15,8 @@ class BananaApp(Application):
     # model           = 'data/test.obj'    # relative path to object file
 
 
-    # texture         = 'data/Banana.png'    # relative path to texture file
-    texture         = 'data/test5.png'    # relative path to texture file
+    texture         = 'data/Banana.png'    # relative path to texture file
+    # texture         = 'data/test5.png'    # relative path to texture file
 
     color       = 0.2, 0.8, 0.2, 0.3   # model color (overlay)
     # color       = 0.8, 0.8, 0.2, 0.5   # model color (overlay)
