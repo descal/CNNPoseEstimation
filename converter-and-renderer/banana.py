@@ -3,6 +3,7 @@
 import numpy as np
 import re
 from bananaApp import BananaApp
+import cv2
 
 def look():
     BananaApp.run_in_window()
@@ -20,6 +21,23 @@ def peel(N,d):
         # r = 90
         bananaApp.set_view_from_target(v, bananaApp.target, r)
         bananaApp.run_instance()
+
+def changeBackground(imgPathIn,backPathIn,imgPathOut):
+    imgFront = cv2.imread(imgPathIn) #'output/annotated_0006.png'
+    imgBack = cv2.imread(backPathIn) #'plantation.jpg'
+
+    height, width = imgFront.shape[:2]
+
+    resizeBack = cv2.resize(imgBack, (width, height), interpolation=cv2.INTER_CUBIC)
+
+    for i in range(width):
+        for j in range(height):
+            pixel = imgFront[j, i]
+            if np.all(pixel == [0, 0, 0]):
+                imgFront[j, i] = resizeBack[j, i]
+
+    cv2.imwrite(imgPathOut,imgFront)
+    return
 
 
 def tryint(s):

@@ -12,7 +12,7 @@ class BananaApp(Application):
     RESOLUTION = (640,480)
 
     model           = 'data/Banana.obj'    # relative path to object file
-    # model           = 'data/test.obj'    # relative path to object file
+    model           = 'data/test.obj'    # relative path to object file
 
 
     texture         = 'data/Banana.png'    # relative path to texture file
