@@ -12,11 +12,11 @@ class BananaApp(Application):
     RESOLUTION = (640,480)
 
     model           = 'data/Banana.obj'    # relative path to object file
-    model           = 'data/test.obj'    # relative path to object file
+    model           = 'data/model.obj'    # relative path to object file
 
 
     texture         = 'data/Banana.png'    # relative path to texture file
-    # texture         = 'data/test5.png'    # relative path to texture file
+    texture         = 'data/texture1.jpg'    # relative path to texture file
 
     color       = 0.2, 0.8, 0.2, 0.3   # model color (overlay)
     # color       = 0.8, 0.8, 0.2, 0.5   # model color (overlay)
@@ -27,8 +27,8 @@ class BananaApp(Application):
     light       = 10.0, 10.0, 10.0     # light source position
 
     fov         = 58.0                 # camera field of view in degrees
-    cam         = 0.5, 0.0, 0.0        # camera position
-    target      = 0 , 0.0, 0.0       # camera target position
+    cam         = 1.5, 0.0, 0.0        # camera position
+    target      = 0.0 , 0.0, 0.0       # camera target position
     roll        = 0.0                  # camera roll in degrees
 
     def __init__(self):

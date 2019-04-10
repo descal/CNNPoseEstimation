@@ -16,9 +16,7 @@ def peel(N,d):
         # v[2] = 0
         # v[1] = 0
         v = v / np.linalg.norm(v) * d
-        # v= 20, -10.0, 00.0
         r = np.random.rand() * 360
-        # r = 90
         bananaApp.set_view_from_target(v, bananaApp.target, r)
         bananaApp.run_instance()
 
@@ -105,7 +103,7 @@ def main():
             print(v)
             v[2]=0
             v = v / np.linalg.norm(v) * args.d
-            # v= 20, -10.0, 00.0
+            v= 20, 0.00, 00.0
             r = np.random.rand() * 360
             r=90
             bananaApp.set_view_from_target(v , bananaApp.target, r)
