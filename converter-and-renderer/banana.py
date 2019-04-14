@@ -3,9 +3,94 @@
 import numpy as np
 import re
 from bananaApp import BananaApp
+from autonanaApp import AutonanaApp
+import cv2
+import os
+from pathlib import Path
+
+
+
+def devour(model,N,d,texture=None):
+
+    bananaAppz = AutonanaApp(model,texture)
+    for i in range(N):
+        v = np.random.rand(3) * 2 - 1.0
+        v = v / np.linalg.norm(v) * d
+        r = np.random.rand() * 360
+        bananaAppz.set_view_from_target(v, bananaAppz.target, r)
+        bananaAppz.run_instance()
+        model_name = os.path.basename(Path(model))
+        model_name = model_name[:len(model_name)-4]
+        folder = 'output/'+model_name+'/'
+        rgb_file = folder+'rgb_{:04}.png'.format(i)
+        background_file_out = folder+'back_{:04}.png'.format(i)
+        background_file_in = 'data/workshop.jpg'
+        changeBackground(rgb_file, background_file_in, background_file_out)
+
+
+
+
+#
+# def noisy(noise_typ,image):
+#    if noise_typ == "gauss":
+#       row,col,ch= image.shape
+#       mean = 0
+#       var = 0.1
+#       sigma = var**0.5
+#       gauss = np.random.normal(mean,sigma,(row,col,ch))
+#       gauss = gauss.reshape(row,col,ch)
+#       noisy = image + gauss
+#       return noisy
+#    elif noise_typ == "s&p":
+#       row,col,ch = image.shape
+#       s_vs_p = 0.5
+#       amount = 0.004
+#       out = np.copy(image)
+#       # Salt mode
+#       num_salt = np.ceil(amount * image.size * s_vs_p)
+#       coords = [np.random.randint(0, i - 1, int(num_salt))
+#               for i in image.shape]
+#       out[coords] = 1
+#
+#       # Pepper mode
+#       num_pepper = np.ceil(amount* image.size * (1. - s_vs_p))
+#       coords = [np.random.randint(0, i - 1, int(num_pepper))
+#               for i in image.shape]
+#       out[coords] = 0
+#       return out
+#   elif noise_typ == "poisson":
+#       vals = len(np.unique(image))
+#       vals = 2 ** np.ceil(np.log2(vals))
+#       noisy = np.random.poisson(image * vals) / float(vals)
+#       return noisy
+#   elif noise_typ =="speckle":
+#       row,col,ch = image.shape
+#       gauss = np.random.randn(row,col,ch)
+#       gauss = gauss.reshape(row,col,ch)
+#       noisy = image + image * gauss
+#       return noisy
+
 
 def look():
+
     BananaApp.run_in_window()
+
+
+
+def eat(files):
+    bananaApp = BananaApp()
+    files.sort(key=alphanum_key)
+    for file in files:
+        for line in file:
+            line = line.strip()
+            if not line: continue
+            pose = np.fromstring(line, sep=' ')
+            if len(pose[3:]) == 3:
+                bananaApp.set_view_from_euler(pose[:3], pose[3:])
+            elif len(pose[3:]) == 4:
+                bananaApp.set_view_from_quaternion(pose[:3], pose[3:])
+            print('Rendering for {}: {}, {}'.format(file.name, pose[:3], pose[3:]))
+            bananaApp.run_instance()
 
 def peel(N,d):
     bananaApp = BananaApp()
@@ -15,11 +100,26 @@ def peel(N,d):
         # v[2] = 0
         # v[1] = 0
         v = v / np.linalg.norm(v) * d
-        # v= 20, -10.0, 00.0
         r = np.random.rand() * 360
-        # r = 90
         bananaApp.set_view_from_target(v, bananaApp.target, r)
         bananaApp.run_instance()
+
+def changeBackground(imgPathIn,backPathIn,imgPathOut):
+    imgFront = cv2.imread(imgPathIn) #'output/annotated_0006.png'
+    imgBack = cv2.imread(backPathIn) #'plantation.jpg'
+
+    height, width = imgFront.shape[:2]
+
+    resizeBack = cv2.resize(imgBack, (width, height), interpolation=cv2.INTER_CUBIC)
+
+    for i in range(width):
+        for j in range(height):
+            pixel = imgFront[j, i]
+            if np.all(pixel == [0, 0, 0]):
+                imgFront[j, i] = resizeBack[j, i]
+
+    cv2.imwrite(imgPathOut,imgFront)
+    return
 
 
 def tryint(s):
@@ -87,7 +187,7 @@ def main():
             print(v)
             v[2]=0
             v = v / np.linalg.norm(v) * args.d
-            # v= 20, -10.0, 00.0
+            v= 20, 0.00, 00.0
             r = np.random.rand() * 360
             r=90
             bananaApp.set_view_from_target(v , bananaApp.target, r)
