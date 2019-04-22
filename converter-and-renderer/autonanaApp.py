@@ -10,7 +10,7 @@ def local(*path):
     return os.path.normpath(os.path.join(os.path.dirname(__file__), *path))
 
 class AutonanaApp(Application):
-    RESOLUTION = (640,480)
+    RESOLUTION = (416,416)
 
     # model           = 'data/Banana.obj'    # relative path to object file
     model           = 'data/model.obj'    # relative path to object file
@@ -18,12 +18,15 @@ class AutonanaApp(Application):
     # texture         = 'data/texture0.jpg'    # relative path to texture file
 
     color       = 0.2, 0.8, 0.2, 0.3   # model color (overlay)
+    color       = 1, 1, 1, 1   # model color (overlay)
+
     # color       = 0.8, 0.8, 0.2, 0.5   # model color (overlay)
     position    = 0.0, 0.0, 0.0        # model position
     orientation = 0.0, 00.0, 0.0        # model orientation (degrees)
 
 
     light       = 100.0, 100.0, 100.0     # light source position
+
 
     fov         = 58.0                 # camera field of view in degrees
     cam         = 0.5, 0.0, 0.0        # camera position
@@ -50,7 +53,7 @@ class AutonanaApp(Application):
 
         self.set_model_from_euler(self.position, self.orientation)    # position object in scene
         self.set_view_from_target(self.cam, self.target, self.roll)   # position camera in scene
-        self.set_perspective_projection(self.fov, 0.10, 100.0)          # use perspective projection for rendering (float fieldOfView, float aspectRatio, float nearPlane, float farPlane)
+        self.set_perspective_projection(self.fov, 0.10, 300.0)          # use perspective projection for rendering (float fieldOfView, float aspectRatio, float nearPlane, float farPlane)
 
     def update(self, info):
         pass
@@ -71,10 +74,11 @@ class AutonanaApp(Application):
         mask_file      = local(folder, 'mask_{:04}.png'.format(self._index))
         annotated_file = local(folder, 'annotated_{:04}.png'.format(self._index))
         roi_file       = local(folder, 'roi_{:04}.txt'.format(self._index))
-        yolo_file       = local(folder, 'yolo_{:04}.txt'.format(self._index))
+        yolo_file       = local(folder, model_name+'_{:04}.txt'.format(self._index))
+        dataset_file = local(folder,'model.txt')
 
         cam_pose_file  = local(folder, 'camera_{:04}.txt'.format(self._index))
-        obj_pose_file  = local(folder, 'model_{:04}.txt'.format(self._index))
+        obj_pose_file  = local(folder, 'pose_{:04}.txt'.format(self._index))
         self._index += 1
 
         os.makedirs(local(folder), exist_ok=True)
@@ -103,6 +107,13 @@ class AutonanaApp(Application):
         #Write yolo annotation file
         yolo = open(yolo_file,'w')
         yolo.write(yolo3std)
+
+        print(dataset_file)
+        f = open(dataset_file, "a+")
+
+        f.write("data/obj/"+model_name+'_{:04}.png'.format(self._index)+ "\n")
+        f.close()
+
 
         with open(roi_file,'wb') as f:
             np.savetxt(f, [roi], fmt='%d', delimiter=' ')

@@ -10,7 +10,7 @@ from pathlib import Path
 
 
 
-def devour(model,N,d,texture=None):
+def devour(model,background_file_in,N,d,texture=None):
 
     bananaAppz = AutonanaApp(model,texture)
     for i in range(N):
@@ -23,9 +23,11 @@ def devour(model,N,d,texture=None):
         model_name = model_name[:len(model_name)-4]
         folder = 'output/'+model_name+'/'
         rgb_file = folder+'rgb_{:04}.png'.format(i)
-        background_file_out = folder+'back_{:04}.png'.format(i)
-        background_file_in = 'data/workshop.jpg'
+        background_file_out = folder+model_name+'_{:04}.png'.format(i)
+        # background_file_in = 'data/kite.jpg'
         changeBackground(rgb_file, background_file_in, background_file_out)
+
+
 
 
 
