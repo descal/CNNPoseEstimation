@@ -39,13 +39,12 @@ if BatchRun == True:
 
 
 model = 'data\Banana.obj'
-# texture = 'data\Banana.png'
+texture = 'data\Banana.png'
 #
 model = 'data/0.obj' # relative path to object file
 # texture = 'data/13476.jpg' # relative path to texture file
 texture=None
-background_file_in = 'data/palm2.jpg'
-banana.devour(model,background_file_in,40,170.5,texture) #Model path, Number of images, camera distance from object, optional:texture
+banana.devour(model,1000,175,texture) #Model path, Number of images, camera distance from object, optional:texture
 
 # banana.look() # Visualize model
 

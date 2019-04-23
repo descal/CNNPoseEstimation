@@ -8,14 +8,16 @@ import cv2
 import os
 from pathlib import Path
 
+import os, random
 
-
-def devour(model,background_file_in,N,d,texture=None):
+def devour(model,N,d,texture=None):
 
     bananaAppz = AutonanaApp(model,texture)
     for i in range(N):
+        temp_d = d+(d/3)*np.random.uniform(-1.0,1.0,size=1)
+        print(temp_d)
         v = np.random.rand(3) * 2 - 1.0
-        v = v / np.linalg.norm(v) * d
+        v = v / np.linalg.norm(v) * temp_d
         r = np.random.rand() * 360
         bananaAppz.set_view_from_target(v, bananaAppz.target, r)
         bananaAppz.run_instance()
@@ -23,9 +25,11 @@ def devour(model,background_file_in,N,d,texture=None):
         model_name = model_name[:len(model_name)-4]
         folder = 'output/'+model_name+'/'
         rgb_file = folder+'rgb_{:04}.png'.format(i)
-        background_file_out = folder+model_name+'_{:04}.png'.format(i)
-        # background_file_in = 'data/kite.jpg'
-        changeBackground(rgb_file, background_file_in, background_file_out)
+        background_file_out = folder+'/YOLO/'+model_name+'_{:04}.png'.format(i)
+        background_dir = "data/backgrounds"
+        temp_background_file_in = random.choice(os.listdir(background_dir))  # change dir name to whatever
+        rand_background_file = background_dir+"/"+temp_background_file_in
+        changeBackground(rgb_file, rand_background_file, background_file_out)
 
 
 

@@ -25,7 +25,7 @@ class AutonanaApp(Application):
     orientation = 0.0, 00.0, 0.0        # model orientation (degrees)
 
 
-    light       = 100.0, 100.0, 100.0     # light source position
+    light       = 200.0, 200.0, 200.0     # light source position
 
 
     fov         = 58.0                 # camera field of view in degrees
@@ -69,13 +69,14 @@ class AutonanaApp(Application):
         model_name = os.path.basename(Path(self.model))
         model_name = model_name[:len(model_name)-4]
         folder = 'output/'+str(model_name)
+        yolo_folder = folder+'/YOLO/'
         rgb_file       = local(folder, 'rgb_{:04}.png'.format(self._index))
-        depth_file     = local(folder, 'depth_{:04}.png'.format(self._index))
-        mask_file      = local(folder, 'mask_{:04}.png'.format(self._index))
-        annotated_file = local(folder, 'annotated_{:04}.png'.format(self._index))
-        roi_file       = local(folder, 'roi_{:04}.txt'.format(self._index))
-        yolo_file       = local(folder, model_name+'_{:04}.txt'.format(self._index))
-        dataset_file = local(folder,'model.txt')
+        # mask_file      = local(folder, 'mask_{:04}.png'.format(self._index))
+        # depth_file     = local(folder, 'depth_{:04}.png'.format(self._index))
+        # annotated_file = local(folder, 'annotated_{:04}.png'.format(self._index))
+        # roi_file       = local(folder, 'roi_{:04}.txt'.format(self._index))
+        yolo_file       = local(yolo_folder, model_name+'_{:04}.txt'.format(self._index))
+        dataset_file = local(yolo_folder,'file_paths.txt')
 
         cam_pose_file  = local(folder, 'camera_{:04}.txt'.format(self._index))
         obj_pose_file  = local(folder, 'pose_{:04}.txt'.format(self._index))
@@ -84,8 +85,8 @@ class AutonanaApp(Application):
         os.makedirs(local(folder), exist_ok=True)
 
         images['RGB'].save(rgb_file)
-        images['DEPTH'].save(depth_file)
-        images['MASK'].save(mask_file)
+        # images['DEPTH'].save(depth_file)
+        # images['MASK'].save(mask_file)
 
         roi = images['MASK'].getbbox()
         left, upper, right, lower = images['MASK'].getbbox()
@@ -93,7 +94,7 @@ class AutonanaApp(Application):
         annotated = images['RGB'].copy()
         draw = ImageDraw.Draw(annotated)
         draw.rectangle(roi, outline=(255,0,0))
-        annotated.save(annotated_file)
+        # annotated.save(annotated_file)
         w = (right-left) #bbox width in pixles
         h = (lower-upper) #bbox height in pixles
         cx = float((left + w/2)/self.RESOLUTION[0]) #bbox center x
@@ -108,23 +109,22 @@ class AutonanaApp(Application):
         yolo = open(yolo_file,'w')
         yolo.write(yolo3std)
 
-        print(dataset_file)
         f = open(dataset_file, "a+")
 
-        f.write("data/obj/"+model_name+'_{:04}.png'.format(self._index)+ "\n")
+        f.write("data/obj/"+model_name+'_{:04}.png'.format(self._index-1)+ "\n")
         f.close()
 
-
-        with open(roi_file,'wb') as f:
-            np.savetxt(f, [roi], fmt='%d', delimiter=' ')
-
-        cam = self.get_camera_pose()
-        with open(cam_pose_file,'wb') as f:
-            np.savetxt(f, [cam], fmt='%.5f', delimiter=' ')
-
-        obj = self.get_model_pose()
-        with open(obj_pose_file,'wb') as f:
-            np.savetxt(f, [obj], fmt='%.5f', delimiter=' ')
+        #
+        # with open(roi_file,'wb') as f:
+        #     np.savetxt(f, [roi], fmt='%d', delimiter=' ')
+        #
+        # cam = self.get_camera_pose()
+        # with open(cam_pose_file,'wb') as f:
+        #     np.savetxt(f, [cam], fmt='%.5f', delimiter=' ')
+        #
+        # obj = self.get_model_pose()
+        # with open(obj_pose_file,'wb') as f:
+        #     np.savetxt(f, [obj], fmt='%.5f', delimiter=' ')
 
         print('Saved {} banana'.format(self._index))
 
