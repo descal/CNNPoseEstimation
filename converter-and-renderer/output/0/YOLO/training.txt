@@ -13,3 +13,11 @@ data/obj/0_0011.png
 data/obj/0_0012.png
 data/obj/0_0013.png
 data/obj/0_0014.png
+<<<<<<< HEAD
+=======
+data/obj/0_0015.png
+data/obj/0_0016.png
+data/obj/0_0017.png
+data/obj/0_0018.png
+data/obj/0_0019.png
+>>>>>>> 1edadc5a8e84f013ce918ad3e1cff23c5a5b4fdd

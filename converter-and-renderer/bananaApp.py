@@ -11,30 +11,30 @@ def local(*path):
 class BananaApp(Application):
     RESOLUTION = (640,480)
 
-    model           = 'data/Banana.obj'    # relative path to object file
-    # model           = 'data/test.obj'    # relative path to object file
+    # model           = 'data/Banana.obj'    # relative path to object file
+    model           = 'data/13476.obj'    # relative path to object file
+    model = 'data/Fidget_Spinner.obj'  # relative path to object file
 
-
-    texture         = 'data/Banana.png'    # relative path to texture file
-    # texture         = 'data/test5.png'    # relative path to texture file
+    # texture         = 'data/Banana.png'    # relative path to texture file
+    texture         = 'data/13476.jpg'    # relative path to texture file
 
     color       = 0.2, 0.8, 0.2, 0.3   # model color (overlay)
-    # color       = 0.8, 0.8, 0.2, 0.5   # model color (overlay)
+    color       = 1, 1, 1, 1   # model color (overlay)
+
     position    = 0.0, 0.0, 0.0        # model position
     orientation = 0.0, 00.0, 0.0        # model orientation (degrees)
 
 
-    light       = 10.0, 10.0, 10.0     # light source position
+    light       = 50.0, 50.0, 50.0     # light source position
 
     fov         = 58.0                 # camera field of view in degrees
-    cam         = 0.5, 0.0, 0.0        # camera position
-    target      = 0 , 0.0, 0.0       # camera target position
+    cam         = 30.5, 0.0, 0.0        # camera position
+    target      = 0.0 , 0.0, 0.0       # camera target position
     roll        = 0.0                  # camera roll in degrees
 
     def __init__(self):
         super(BananaApp, self).__init__()
         self._index = 0
-
         self.load_model(self.model, self.texture)   # load model with texture
         # self.load_model(self.model)               # load model
         # self.set_model_texture(self.texture)      # load, set and enable texture

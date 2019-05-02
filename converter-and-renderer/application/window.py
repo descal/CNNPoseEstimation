@@ -141,7 +141,7 @@ class Window(QtOpenGL.QGLWidget):
         if self.wnd.key_down(233):
             if self.wnd.wheel != 0:
                 if self.wnd.key_down(227): # Left CTRL
-                    self.app.object_roll(self.wnd.dt * self.wnd.wheel * 30)
+                    self.app.object_roll(self.wnd.dt * self.wnd.wheel * 3)
                 else:
                     self.app.object_zoom(self.wnd.dt * self.wnd.wheel * 0.1)
 
