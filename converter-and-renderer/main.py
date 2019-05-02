@@ -8,9 +8,9 @@ import os
 
 from pathlib import Path, PureWindowsPath
 
-BathRun = False
+BatchRun = False
 
-if BathRun == True:
+if BatchRun == True:
     for root, dirs, files in os.walk("ShapeNetCore.v2/"):
         for file in files:
             if file.endswith("model_normalized.obj"):
@@ -38,16 +38,16 @@ if BathRun == True:
 
 
 
-# model = 'data\Banana.obj'
-# texture = 'data\Banana.png'
+model = 'data\Banana.obj'
+texture = 'data\Banana.png'
 #
-model = 'data/13476.obj' # relative path to object file
-texture = 'data/13476.jpg' # relative path to texture file
+model = 'data/0.obj' # relative path to object file
+# texture = 'data/13476.jpg' # relative path to texture file
+texture=None
+banana.devour(model,2000,350,texture) #Model path, Number of images, camera distance from object, optional:texture
 
+# banana.look() # Visualize model
 
-# banana.devour(model,15,50,texture) #Model path, Number of images, camera distance from object, optional:texture
-
-banana.look() # Visualize model
 
 
 

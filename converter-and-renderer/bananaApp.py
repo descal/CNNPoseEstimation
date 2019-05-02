@@ -13,10 +13,14 @@ class BananaApp(Application):
 
     # model           = 'data/Banana.obj'    # relative path to object file
     model           = 'data/13476.obj'    # relative path to object file
+    model = 'data/Fidget_Spinner.obj'  # relative path to object file
+
     # texture         = 'data/Banana.png'    # relative path to texture file
     texture         = 'data/13476.jpg'    # relative path to texture file
 
     color       = 0.2, 0.8, 0.2, 0.3   # model color (overlay)
+    color       = 1, 1, 1, 1   # model color (overlay)
+
     position    = 0.0, 0.0, 0.0        # model position
     orientation = 0.0, 00.0, 0.0        # model orientation (degrees)
 
