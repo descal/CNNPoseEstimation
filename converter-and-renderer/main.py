@@ -44,9 +44,10 @@ texture = 'data\Banana.png'
 model = 'data/0.obj' # relative path to object file
 # texture = 'data/13476.jpg' # relative path to texture file
 texture=None
-banana.devour(model,1000,175,texture) #Model path, Number of images, camera distance from object, optional:texture
+banana.devour(model,2000,350,texture) #Model path, Number of images, camera distance from object, optional:texture
 
 # banana.look() # Visualize model
+
 
 
 

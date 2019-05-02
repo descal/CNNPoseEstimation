@@ -11,23 +11,10 @@ def local(*path):
 
 class AutonanaApp(Application):
     RESOLUTION = (416,416)
-
-    # model           = 'data/Banana.obj'    # relative path to object file
-    model           = 'data/model.obj'    # relative path to object file
-    texture         = 'data/Banana.png'    # relative path to texture file
-    # texture         = 'data/texture0.jpg'    # relative path to texture file
-
-    color       = 0.2, 0.8, 0.2, 0.3   # model color (overlay)
     color       = 1, 1, 1, 1   # model color (overlay)
-
-    # color       = 0.8, 0.8, 0.2, 0.5   # model color (overlay)
     position    = 0.0, 0.0, 0.0        # model position
     orientation = 0.0, 00.0, 0.0        # model orientation (degrees)
-
-
-    light       = 200.0, 200.0, 200.0     # light source position
-
-
+    light       = 500.0, 500.0, 500.0     # light source position
     fov         = 58.0                 # camera field of view in degrees
     cam         = 0.5, 0.0, 0.0        # camera position
     target      = 0.0 , 0.0, 0.0       # camera target position
@@ -46,14 +33,14 @@ class AutonanaApp(Application):
         # self.disable_texture()                    # disable texture
 
         self.set_model_color(self.color)       # set and enable color (overlay)
-        self.disable_color()                  # disable color (overlay)
+        #self.disable_color()                  # disable color (overlay)
 
         self.set_light_position(self.light)    # set and enable light
         # self.disable_light()                  # disable light
 
         self.set_model_from_euler(self.position, self.orientation)    # position object in scene
         self.set_view_from_target(self.cam, self.target, self.roll)   # position camera in scene
-        self.set_perspective_projection(self.fov, 0.10, 300.0)          # use perspective projection for rendering (float fieldOfView, float aspectRatio, float nearPlane, float farPlane)
+        self.set_perspective_projection(self.fov, 0.10, 1000.0)          # use perspective projection for rendering (float fieldOfView, float aspectRatio, float nearPlane, float farPlane)
 
     def update(self, info):
         pass
@@ -64,29 +51,18 @@ class AutonanaApp(Application):
 
 
     def save_to_file(self, images, folder='output'):
-        # # path = Path(self.model)
-        # print(Path(self.model).filename)
+
         model_name = os.path.basename(Path(self.model))
         model_name = model_name[:len(model_name)-4]
         folder = 'output/'+str(model_name)
-        yolo_folder = folder+'/YOLO/'
-        rgb_file       = local(folder, 'rgb_{:04}.png'.format(self._index))
-        # mask_file      = local(folder, 'mask_{:04}.png'.format(self._index))
-        # depth_file     = local(folder, 'depth_{:04}.png'.format(self._index))
-        # annotated_file = local(folder, 'annotated_{:04}.png'.format(self._index))
-        # roi_file       = local(folder, 'roi_{:04}.txt'.format(self._index))
-        yolo_file       = local(yolo_folder, model_name+'_{:04}.txt'.format(self._index))
-        dataset_file = local(yolo_folder,'file_paths.txt')
-
-        cam_pose_file  = local(folder, 'camera_{:04}.txt'.format(self._index))
-        obj_pose_file  = local(folder, 'pose_{:04}.txt'.format(self._index))
+        # yolo_folder = folder+'/YOLO/'
+        rgb_file       = local(folder+'/temp/', 'rgb_{:04}.png'.format(self._index))
+        yolo_file       = local(folder+'/YOLO/', model_name+'_{:04}.txt'.format(self._index))
         self._index += 1
 
         os.makedirs(local(folder), exist_ok=True)
 
         images['RGB'].save(rgb_file)
-        # images['DEPTH'].save(depth_file)
-        # images['MASK'].save(mask_file)
 
         roi = images['MASK'].getbbox()
         left, upper, right, lower = images['MASK'].getbbox()
@@ -94,7 +70,6 @@ class AutonanaApp(Application):
         annotated = images['RGB'].copy()
         draw = ImageDraw.Draw(annotated)
         draw.rectangle(roi, outline=(255,0,0))
-        # annotated.save(annotated_file)
         w = (right-left) #bbox width in pixles
         h = (lower-upper) #bbox height in pixles
         cx = float((left + w/2)/self.RESOLUTION[0]) #bbox center x
@@ -108,23 +83,11 @@ class AutonanaApp(Application):
         #Write yolo annotation file
         yolo = open(yolo_file,'w')
         yolo.write(yolo3std)
-
-        f = open(dataset_file, "a+")
-
-        f.write("data/obj/"+model_name+'_{:04}.png'.format(self._index-1)+ "\n")
-        f.close()
-
         #
-        # with open(roi_file,'wb') as f:
-        #     np.savetxt(f, [roi], fmt='%d', delimiter=' ')
+        # f = open(dataset_file, "a+")
         #
-        # cam = self.get_camera_pose()
-        # with open(cam_pose_file,'wb') as f:
-        #     np.savetxt(f, [cam], fmt='%.5f', delimiter=' ')
-        #
-        # obj = self.get_model_pose()
-        # with open(obj_pose_file,'wb') as f:
-        #     np.savetxt(f, [obj], fmt='%.5f', delimiter=' ')
+        # f.write("data/obj/"+model_name+'_{:04}.png'.format(self._index-1)+ "\n")
+        # f.close()
 
         print('Saved {} banana'.format(self._index))
 
