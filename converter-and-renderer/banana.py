@@ -13,7 +13,6 @@ import os, random
 def devour(model,N,d,texture=None):
     bananaAppz = AutonanaApp(model,texture)
     for i in range(N):
-
         col = np.random.random(), np.random.random(), np.random.random(), np.random.random() #Randomize color
         bananaAppz.set_model_color(col) #Set color overlay
         temp_d = d+(d/2)*np.random.uniform(-1.0,1.0,size=1) #Randomize distance from object within range +- 30% of original distance
@@ -21,8 +20,6 @@ def devour(model,N,d,texture=None):
         v = v / np.linalg.norm(v) * temp_d
         v[1]=-180
         r = np.random.rand() * 360
-        print("v",v)
-        print("r",r)
         bananaAppz.set_view_from_target(v, bananaAppz.target, r)
         bananaAppz.run_instance()
         model_name = os.path.basename(Path(model))
@@ -38,7 +35,7 @@ def devour(model,N,d,texture=None):
         changeBackground(rgb_file, rand_background_file, background_file_out)
 
         #Save filepaths to testing file instead of training file once 70% reached
-        if i > int(N/7):
+        if i > int(0.7*N):
             dataset_file = test_dataset_file
 
         f = open(dataset_file, "a+")
@@ -46,6 +43,32 @@ def devour(model,N,d,texture=None):
         f.close()
 
 
+def genRandom(model,n,e):
+
+
+    model_name = os.path.basename(Path(model))
+    model_name = model_name[:len(model_name) - 4]
+    folder = 'output/' + model_name + '/'
+    rgb_file = 'data/black416.png'
+    background_dir = "data/foregrounds"
+
+    for i in range (n,n+e):
+        temp_background_file_in = random.choice(os.listdir(background_dir))
+        rand_background_file = background_dir+"/"+temp_background_file_in
+        background_file_out = folder + '/YOLO/' + model_name + '_{:04}.png'.format(i)
+        yolo_file = folder + '/YOLO/' + model_name + '_{:04}.txt'.format(i)
+        yolo = open(yolo_file,'w')
+        test = ""
+        yolo.write(test)
+
+        changeBackground(rgb_file, rand_background_file, background_file_out)
+        dataset_file = folder+'/YOLO/training.txt'
+        f = open(dataset_file, "a+")
+        f.write("data/obj/" + model_name + '_{:04}.png'.format(i) + "\n")
+        f.close()
+        print("Saved {} fake banana".format(i-n+1))
+
+    return
 
 
 
