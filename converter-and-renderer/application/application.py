@@ -264,7 +264,7 @@ class Application(object):
     def _render(self):
         self._ctx.clear()
         self._ctx.enable(moderngl.DEPTH_TEST)
-        self._ctx.enable(moderngl.CULL_FACE)
+        # self._ctx.enable(moderngl.CULL_FACE)
         # self._ctx.enable(moderngl.BLEND)
 
         self._M.write(self._model_mat.astype('f4').tobytes())

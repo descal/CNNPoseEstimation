@@ -14,7 +14,7 @@ class AutonanaApp(Application):
     color       = 1, 1, 1, 1   # model color (overlay)
     position    = 0.0, 0.0, 0.0        # model position
     orientation = 0.0, 00.0, 0.0        # model orientation (degrees)
-    light       = 500.0, 500.0, 500.0     # light source position
+    light       = 400.0, 400.0, 400.0     # light source position
     fov         = 58.0                 # camera field of view in degrees
     cam         = 0.5, 0.0, 0.0        # camera position
     target      = 0.0 , 0.0, 0.0       # camera target position
@@ -40,7 +40,7 @@ class AutonanaApp(Application):
 
         self.set_model_from_euler(self.position, self.orientation)    # position object in scene
         self.set_view_from_target(self.cam, self.target, self.roll)   # position camera in scene
-        self.set_perspective_projection(self.fov, 0.10, 1000.0)          # use perspective projection for rendering (float fieldOfView, float aspectRatio, float nearPlane, float farPlane)
+        self.set_perspective_projection(self.fov, 0.10, 700.0)          # use perspective projection for rendering (float fieldOfView, float aspectRatio, float nearPlane, float farPlane)
 
     def update(self, info):
         pass
@@ -61,6 +61,8 @@ class AutonanaApp(Application):
         self._index += 1
 
         os.makedirs(local(folder), exist_ok=True)
+        os.makedirs(local(folder+"/YOLO"), exist_ok=True)
+        os.makedirs(local(folder+"/temp"), exist_ok=True)
 
         images['RGB'].save(rgb_file)
 
@@ -89,6 +91,6 @@ class AutonanaApp(Application):
         # f.write("data/obj/"+model_name+'_{:04}.png'.format(self._index-1)+ "\n")
         # f.close()
 
-        print('Saved {} banana'.format(self._index))
+        print('Saved {} banana(s) of class {}'.format(self._index,model_name))
 
 
