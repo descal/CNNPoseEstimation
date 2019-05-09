@@ -73,7 +73,6 @@ class Application(object):
 
     def set_model_texture(self, tex_file):
         texture = Image.open(local('..', tex_file)).transpose(Image.FLIP_TOP_BOTTOM).convert('RGB')
-        print(texture.size)
 
         self.texture = self._ctx.texture(texture.size, 3, texture.tobytes())
         self.texture.build_mipmaps()

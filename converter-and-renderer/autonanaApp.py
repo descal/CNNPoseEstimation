@@ -55,14 +55,12 @@ class AutonanaApp(Application):
         model_name = os.path.basename(Path(self.model))
         model_name = model_name[:len(model_name)-4]
         folder = 'output/'+str(model_name)
-        # yolo_folder = folder+'/YOLO/'
-        rgb_file       = local(folder+'/temp/', 'rgb_{:04}.png'.format(self._index))
-        yolo_file       = local(folder+'/YOLO/', model_name+'_{:04}.txt'.format(self._index))
+        rgb_file       = local('output/temp/rgb_{:04}.png'.format(self._index))
+        print(rgb_file)
+        yolo_file       = local('output/'+model_name+'_{:04}.txt'.format(self._index))
         self._index += 1
 
-        os.makedirs(local(folder), exist_ok=True)
-        os.makedirs(local(folder+"/YOLO"), exist_ok=True)
-        os.makedirs(local(folder+"/temp"), exist_ok=True)
+        os.makedirs(local('output/temp'), exist_ok=True)
 
         images['RGB'].save(rgb_file)
 
