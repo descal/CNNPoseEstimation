@@ -10,7 +10,7 @@ from pathlib import Path, PureWindowsPath
 i = 0
 n = 10 # Number of generated images per object
 e = 10 # Extra random images from pool
-d = [30,300] # Camera distance from object
+d = [30,300] # Camera distance from object (( NEEDS TO HAVE 1 PER CLASS - Chronologically ))
 p = 0.20 #Scale change percent (distance +- 10%*distance)
 RandTexture = True
 
