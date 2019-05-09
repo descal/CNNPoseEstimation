@@ -3,55 +3,47 @@ import converter
 import banana
 import cv2
 import numpy as np
-
-import os
-
+import os, random
 from pathlib import Path, PureWindowsPath
 
-BatchRun = False
+texture=None
+n = 3 # Number of generated images per object
+e = 3 # Extra random images from pool
+d = [320,320] # Camera distance from object
+i = 0
+RandTexture = True
 
-if BatchRun == True:
-    for root, dirs, files in os.walk("ShapeNetCore.v2/"):
-        for file in files:
-            if file.endswith("model_normalized.obj"):
-                model_file = Path(os.path.join(root, file))
-                model_folder = os.path.dirname(os.path.dirname(model_file))
-                for root, dirs, files in os.walk(model_folder):
-                    for file in files:
-                        if file.endswith(".png") and file.startswith("texture"):
-                            texture_file = Path(os.path.join(root, file))
+for root, dirs, files in os.walk("data/models/"):
+    for file in files:
+        if file.endswith(".obj"):
+            renderedWtex = False
+            print(file)
+            model_file = Path(os.path.join(root, file))
+            model_folder = os.path.dirname(os.path.dirname(model_file))
+            if RandTexture == True:
+                for root_t, dirs_t, files_t in os.walk("data/textures/"):
+                    for file_t in files_t:
+                        print("RANDOM",random.choice(files))
+                        if file_t.endswith(".png") : #and file.startswith("texture")
+                            print("Here",file)
+                            texture_file = Path(os.path.join(root_t, file_t))
                             print("Found model with texture")
                             print("Texture:",texture_file)
                             print("Model:",model_file)
                             try:
-                                banana.devour(model_file,5,10,texture_file
-                                              )
+                                banana.devour(model_file, n, d[i],
+                                              texture_file)  # Model path, Number of images, camera distance from object, optional:texture
+                                banana.genRandom(model_file, n, e)
+
                                 print("SUCCESS - Rendered with texture")
+                                renderedWtex = True
                             except:
-                                try:
-                                    banana.devour(model_file, 5, 10)
-                                    print("SUCCESS - Rendered without texture")
-                                except:
-                                    print("Failed to render")
+                                print("Unable to render with texture")
 
-                            print("-----------")
-
-
-
-model = 'data\Banana.obj'
-texture = 'data\Banana.png'
-#
-model = 'data/0.obj' # relative path to object file
-# texture = 'data/13476.jpg' # relative path to texture file
-texture=None
-n = 2000
-
-banana.devour(model,n,320,texture) #Model path, Number of images, camera distance from object, optional:texture
-banana.genRandom(model,n,1000)
-
-
-# banana.look() # Visualize model
-
-
+                            if renderedWtex == False:
+                                print("Rendering without texture")
+                                banana.devour(model_file, n, d[i])
+                                banana.genRandom(model_file, n, e)
+            i = i + 1
 
 
