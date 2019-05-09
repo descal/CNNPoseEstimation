@@ -6,18 +6,18 @@ import numpy as np
 import os, random
 from pathlib import Path, PureWindowsPath
 
-texture=None
-n = 3 # Number of generated images per object
-e = 3 # Extra random images from pool
-d = [320,320] # Camera distance from object
+
 i = 0
-RandTexture = True
+n = 10 # Number of generated images per object
+e = 10 # Extra random images from pool
+d = [120,300] # Camera distance from object
+p = 0.20 #Scale change percent (distance +- 10%*distance)
+RandTexture = False
 
 for root, dirs, files in os.walk("data/models/"):
     for file in files:
         if file.endswith(".obj"):
             renderedWtex = False
-            print(file)
             model_file = Path(os.path.join(root, file))
             model_folder = os.path.dirname(os.path.dirname(model_file))
             if RandTexture == True:
@@ -31,7 +31,7 @@ for root, dirs, files in os.walk("data/models/"):
                             print("Texture:",texture_file)
                             print("Model:",model_file)
                             try:
-                                banana.devour(model_file, n, d[i],
+                                banana.devour(model_file, n, d[i],p,
                                               texture_file)  # Model path, Number of images, camera distance from object, optional:texture
                                 banana.genRandom(model_file, n, e)
 
@@ -42,8 +42,11 @@ for root, dirs, files in os.walk("data/models/"):
 
                             if renderedWtex == False:
                                 print("Rendering without texture")
-                                banana.devour(model_file, n, d[i])
+                                banana.devour(model_file, n,d[i],p)
                                 banana.genRandom(model_file, n, e)
+            else:
+                banana.devour(model_file, n, d[i],p)
+                banana.genRandom(model_file, n, e)
             i = i + 1
 
 

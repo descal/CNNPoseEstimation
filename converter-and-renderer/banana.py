@@ -10,12 +10,12 @@ from pathlib import Path
 
 import os, random
 
-def devour(model,N,d,texture=None):
+def devour(model,N,d,p,texture=None):
     bananaAppz = AutonanaApp(model,texture)
     for i in range(N):
         col = np.random.random(), np.random.random(), np.random.random(), np.random.random() #Randomize color
         bananaAppz.set_model_color(col) #Set color overlay
-        temp_d = d+(d/2)*np.random.uniform(-1.0,1.0,size=1) #Randomize distance from object within range +- 50% of original distance
+        temp_d = np.random.uniform(int(d-d*p),int(d+d*p),size=1) #Randomize distance from object within range +- 50% of original distance
         v = np.random.rand(3) * 2 - 1.0
         v = v / np.linalg.norm(v) * temp_d
         # v[1]=-180
@@ -28,8 +28,8 @@ def devour(model,N,d,texture=None):
         rgb_file = folder+'/temp/rgb_{:04}.png'.format(i)
         background_file_out = folder+'/YOLO/'+model_name+'_{:04}.png'.format(i)
         background_dir = "data/backgrounds"
-        dataset_file = folder+'/YOLO/training.txt'
-        test_dataset_file = folder+'/YOLO/testing.txt'
+        dataset_file = 'output/training.txt'
+        test_dataset_file = 'output/testing.txt'
         temp_background_file_in = random.choice(os.listdir(background_dir))
         rand_background_file = background_dir+"/"+temp_background_file_in
         changeBackground(rgb_file, rand_background_file, background_file_out)
@@ -70,7 +70,7 @@ def genRandom(model,n,e):
         f = open(dataset_file, "a+")
         f.write("data/obj/" + model_name + '_{:04}.png'.format(i) + "\n")
         f.close()
-        print("Saved {} fake bananas".format(i-n+1))
+        print("Saved {} fake banana(s) of class {}".format((i-n+1),model_name))
 
     return
 
@@ -166,6 +166,7 @@ def changeBackground(imgPathIn,backPathIn,imgPathOut):
                 imgFront[j, i] = resizeBack[j, i]
 
     cv2.imwrite(imgPathOut,imgFront)
+
     return
 
 
