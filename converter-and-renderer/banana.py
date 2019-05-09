@@ -10,11 +10,20 @@ from pathlib import Path
 
 import os, random
 
-def devour(model,N,d,p,texture=None):
-    bananaAppz = AutonanaApp(model,texture)
+def devour(model,N,d,p,textureFlag=False):
+
+    texture = None
+    bananaAppz = AutonanaApp(model, texture)
     for i in range(N):
-        col = np.random.random(), np.random.random(), np.random.random(), np.random.random() #Randomize color
-        bananaAppz.set_model_color(col) #Set color overlay
+
+        if textureFlag == True:
+            for root_t, dirs_t, files_t in os.walk("data/textures/"):
+                file_t = random.choice(files_t)
+                texture = Path(os.path.join(root_t, file_t))
+                bananaAppz.set_model_texture(texture)  # load, set and enable texture
+            else:
+                col = np.random.random(), np.random.random(), np.random.random(), np.random.random() #Randomize color
+                bananaAppz.set_model_color(col) #Set color overlay
         temp_d = np.random.uniform(int(d-d*p),int(d+d*p),size=1) #Randomize distance from object within range +- 50% of original distance
         v = np.random.rand(3) * 2 - 1.0
         v = v / np.linalg.norm(v) * temp_d
@@ -62,10 +71,10 @@ def genRandom(model,n,e):
         yolo.write(test)
 
         changeBackground(rgb_file, rand_background_file, background_file_out)
-        dataset_file = folder+'/YOLO/training.txt'
+        dataset_file = 'output/training.txt'
 
         if (i - n) > int(e*0.7): #Write yolo file paths to testing file once 70% of extra random images are added
-            dataset_file = folder + '/YOLO/testing.txt'
+            dataset_file =  'output/testing.txt'
 
         f = open(dataset_file, "a+")
         f.write("data/obj/" + model_name + '_{:04}.png'.format(i) + "\n")
