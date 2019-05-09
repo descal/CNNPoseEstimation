@@ -10,7 +10,7 @@ from pathlib import Path
 
 import os, random
 
-def devour(model,N,d,p,textureFlag=False):
+def devour(model,N,d,p,noise,textureFlag=False):
 
     texture = None
     bananaAppz = AutonanaApp(model, texture)
@@ -34,17 +34,18 @@ def devour(model,N,d,p,textureFlag=False):
         model_name = os.path.basename(Path(model))
         model_name = model_name[:len(model_name)-4]
         folder = 'output/'+model_name+'/'
-        rgb_file = folder+'/temp/rgb_{:04}.png'.format(i)
-        background_file_out = folder+'/YOLO/'+model_name+'_{:04}.png'.format(i)
+        rgb_file = 'output/temp/rgb_{:04}.png'.format(i)
+        background_file_out = 'output/'+model_name+'_{:04}.png'.format(i)
         background_dir = "data/backgrounds"
         dataset_file = 'output/training.txt'
         test_dataset_file = 'output/testing.txt'
         temp_background_file_in = random.choice(os.listdir(background_dir))
         rand_background_file = background_dir+"/"+temp_background_file_in
-        changeBackground(rgb_file, rand_background_file, background_file_out)
+        changeBackground(rgb_file, rand_background_file, background_file_out,noise)
+        os.remove(rgb_file)
 
         #Save filepaths to testing file instead of training file once 70% reached
-        if i > int(0.7*N):
+        if i >= int(0.7*N):
             dataset_file = test_dataset_file
 
         f = open(dataset_file, "a+")
@@ -52,28 +53,27 @@ def devour(model,N,d,p,textureFlag=False):
         f.close()
 
 
-def genRandom(model,n,e):
+def genRandom(model,n,e,noise):
 
 
     model_name = os.path.basename(Path(model))
     model_name = model_name[:len(model_name) - 4]
-    folder = 'output/' + model_name + '/'
     rgb_file = 'data/black.png'
     background_dir = "data/random"
 
     for i in range (n,n+e):
         temp_background_file_in = random.choice(os.listdir(background_dir))
         rand_background_file = background_dir+"/"+temp_background_file_in
-        background_file_out = folder + '/YOLO/' + model_name + '_{:04}.png'.format(i)
-        yolo_file = folder + '/YOLO/' + model_name + '_{:04}.txt'.format(i)
+        background_file_out = 'output/' + model_name + '_{:04}.png'.format(i)
+        yolo_file = 'output/' + model_name + '_{:04}.txt'.format(i)
         yolo = open(yolo_file,'w')
         test = ""
         yolo.write(test)
 
-        changeBackground(rgb_file, rand_background_file, background_file_out)
+        changeBackground(rgb_file, rand_background_file, background_file_out,noise)
         dataset_file = 'output/training.txt'
 
-        if (i - n) > int(e*0.7): #Write yolo file paths to testing file once 70% of extra random images are added
+        if (i - n) >= int(e*0.7): #Write yolo file paths to testing file once 70% of extra random images are added
             dataset_file =  'output/testing.txt'
 
         f = open(dataset_file, "a+")
@@ -85,53 +85,52 @@ def genRandom(model,n,e):
 
 
 
+def noisy(noise_typ,image):
 
+   if noise_typ == "gauss":
+      row,col,ch= image.shape
+      mean = 0
+      var = 0.1
+      sigma = var**0.5
+      gauss = np.random.normal(mean,sigma,(row,col,ch))
+      gauss = gauss.reshape(row,col,ch)
+      noisy = image + gauss
+      return noisy
+   elif noise_typ == "s&p":
+      row,col,ch = image.shape
+      s_vs_p = 0.5
+      amount = 0.004
+      out = np.copy(image)
+      # Salt mode
+      num_salt = np.ceil(amount * image.size * s_vs_p)
+      coords = [np.random.randint(0, i - 1, int(num_salt))
+              for i in image.shape]
+      out[coords] = 1
 
-# def noisy(noise_typ,image):
-#    if noise_typ == "gauss":
-#       row,col,ch= image.shape
-#       mean = 0
-#       var = 0.1
-#       sigma = var**0.5
-#       gauss = np.random.normal(mean,sigma,(row,col,ch))
-#       gauss = gauss.reshape(row,col,ch)
-#       noisy = image + gauss
-#       return noisy
-#    elif noise_typ == "s&p":
-#       row,col,ch = image.shape
-#       s_vs_p = 0.5
-#       amount = 0.004
-#       out = np.copy(image)
-#       # Salt mode
-#       num_salt = np.ceil(amount * image.size * s_vs_p)
-#       coords = [np.random.randint(0, i - 1, int(num_salt))
-#               for i in image.shape]
-#       out[coords] = 1
-#
-#       # Pepper mode
-#       num_pepper = np.ceil(amount* image.size * (1. - s_vs_p))
-#       coords = [np.random.randint(0, i - 1, int(num_pepper))
-#               for i in image.shape]
-#       out[coords] = 0
-#       return out
-#   elif noise_typ == "poisson":
-#       vals = len(np.unique(image))
-#       vals = 2 ** np.ceil(np.log2(vals))
-#       noisy = np.random.poisson(image * vals) / float(vals)
-#       return noisy
-#   elif noise_typ =="speckle":
-#       row,col,ch = image.shape
-#       gauss = np.random.randn(row,col,ch)
-#       gauss = gauss.reshape(row,col,ch)
-#       noisy = image + image * gauss
-#       return noisy
-#
+      # Pepper mode
+      num_pepper = np.ceil(amount* image.size * (1. - s_vs_p))
+      coords = [np.random.randint(0, i - 1, int(num_pepper))
+              for i in image.shape]
+      out[coords] = 0
+      return out
+   elif noise_typ == "poisson":
+      vals = len(np.unique(image))
+      vals = 10 ** np.ceil(np.log2(vals))
+      noisy = np.random.poisson(image * vals) / float(vals)
+      return noisy
+   elif noise_typ =="speckle":
+      row,col,ch = image.shape
+      gauss = np.random.randn(row,col,ch)
+      gauss = gauss.reshape(row,col,ch)
+      noisy = image + image * gauss
+      return noisy
+   elif noise_typ == None:
+       return image
+
 
 def look():
 
     BananaApp.run_in_window()
-
-
 
 def eat(files):
     bananaApp = BananaApp()
@@ -160,11 +159,13 @@ def peel(N,d):
         bananaApp.set_view_from_target(v, bananaApp.target, r)
         bananaApp.run_instance()
 
-def changeBackground(imgPathIn,backPathIn,imgPathOut):
+def changeBackground(imgPathIn,backPathIn,imgPathOut,noise):
     imgFront = cv2.imread(imgPathIn) #'output/annotated_0006.png'
     imgBack = cv2.imread(backPathIn) #'plantation.jpg'
 
+
     height, width = imgFront.shape[:2]
+
 
     resizeBack = cv2.resize(imgBack, (width, height), interpolation=cv2.INTER_CUBIC)
 
@@ -173,6 +174,9 @@ def changeBackground(imgPathIn,backPathIn,imgPathOut):
             pixel = imgFront[j, i]
             if np.all(pixel == [0, 0, 0]):
                 imgFront[j, i] = resizeBack[j, i]
+
+
+    imgFront = noisy(noise,imgFront)
 
     cv2.imwrite(imgPathOut,imgFront)
 
@@ -241,7 +245,7 @@ def main():
         bananaApp = BananaApp()
         for i in range(args.N):
             v = np.random.rand(3)*2-1.0
-            print(v)
+            # print(v)
             v[2]=0
             v = v / np.linalg.norm(v) * args.d
             v= 20, 0.00, 00.0
