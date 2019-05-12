@@ -48,9 +48,9 @@ def devour(model,N,d,p,noise,textureFlag=False):
         if i >= int(0.7*N):
             dataset_file = test_dataset_file
 
-        f = open(dataset_file, "a+")
-        f.write("data/obj/" + model_name + '_{:04}.png'.format(i) + "\n")
-        f.close()
+        # f = open(dataset_file, "a+")
+        # f.write("data/obj/" + model_name + '_{:04}.png'.format(i) + "\n")
+        # f.close()
 
 
 def genRandom(model,n,e,noise):
