@@ -21,13 +21,12 @@ def devour(model,N,d,p,noise,textureFlag=False):
                 file_t = random.choice(files_t)
                 texture = Path(os.path.join(root_t, file_t))
                 bananaAppz.set_model_texture(texture)  # load, set and enable texture
-            else:
-                col = np.random.random(), np.random.random(), np.random.random(), np.random.random() #Randomize color
-                bananaAppz.set_model_color(col) #Set color overlay
+        else:
+            col = np.random.random(), np.random.random(), np.random.random(), np.random.random() #Randomize color
+            bananaAppz.set_model_color(col) #Set color overlay
         temp_d = np.random.uniform(int(d-d*p),int(d+d*p),size=1) #Randomize distance from object within range +- 50% of original distance
         v = np.random.rand(3) * 2 - 1.0
         v = v / np.linalg.norm(v) * temp_d
-        # v[1]=-180
         r = np.random.rand() * 360
         bananaAppz.set_view_from_target(v, bananaAppz.target, r)
         bananaAppz.run_instance()
@@ -51,7 +50,6 @@ def devour(model,N,d,p,noise,textureFlag=False):
         # f = open(dataset_file, "a+")
         # f.write("data/obj/" + model_name + '_{:04}.png'.format(i) + "\n")
         # f.close()
-
 
 def genRandom(model,n,e,noise):
 
@@ -82,8 +80,6 @@ def genRandom(model,n,e,noise):
         print("Saved {} fake banana(s) of class {}".format((i-n+1),model_name))
 
     return
-
-
 
 def noisy(noise_typ,image):
 
@@ -126,7 +122,6 @@ def noisy(noise_typ,image):
       return noisy
    elif noise_typ == None:
        return image
-
 
 def look():
 
